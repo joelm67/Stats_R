@@ -1,0 +1,133 @@
+1. In a particular college math class, students begin the semester taking a pre-test. At the end of the semester, students receive a final class percentage. Both scores are recorded as percentages out of 100. It was desired to know if performance on the pre-test was predictive of final class percentage. There were 9 students in the class. The results are below:
+
+Student 1 2 3 4 5 6 7 8 9
+Pre-Test 83 81 70 79 69 61 88 72 86
+Final 68 59 72 75 55 52 81 63 70
+
+```{r}
+Student = c(1, 2, 3,4, 5, 6, 7, 8, 9)
+Pre_Test = c(83, 81, 70, 79, 69, 61, 88, 72, 86)
+Final = c(68, 59, 72, 75, 55, 52, 81, 63, 70)
+
+```
+
+
+(a) Make a scatter plot of the data. Does it seem like a straight line model is reasonable?
+```{r}
+plot(Pre_Test, Final)
+```
+
+These data show that a straight line model would be reasonable to show the relationship between a students pre-test score and their final score.
+
+(b) Assuming a straight-line model, compute estimates of the intercept (β0) and slope (β1) of a simple linear regression model.
+
+```{r}
+
+m= lm(Final~Pre_Test)
+y_intercept = m$coefficients[1]
+slope = m$coefficients[2]
+cat('The linear model m gives a y intercept of', y_intercept, 'and a slope of', slope, '\nWith the final formula:' ,'y=',round(y_intercept,2),'+',round(slope,2),'x')
+m
+```
+
+(c) Make the scatter plot again, this time including the regression line.
+```{r}
+plot(Pre_Test, Final)
+abline(y_intercept,slope)
+```
+
+(d) If a student scores 80 on the pre-test, what does the model predict will be that student’s final score?
+```{r}
+ipts = 80
+students_final_score = y_intercept + ipts* slope
+cat('If a student scores an 80 on their pre-test we would expect them to score a',round(students_final_score,2), 'on their final')
+```
+
+2. Here are data on maximum ice thickness in mm (y), average number of days per year of ice cover (x1), average number of days the bottom temperature is lower than 8◦C (x2), and average snow depth in mm for 13 lakes in Minnesota (x3):
+
+Here is one way to get these data into an R data frame:
+```{r}
+data.string="ice_thickness,days.of.ice,days.bottom.lower.8,snow.depth
+
+730,152,198,91
+760,173,201,81
+850,166,202,69
+840,161,202,72
+720,152,198,91
+730,153,205,91
+840,166,204,70
+730,157,204,90
+650,136,172,47
+850,142,218,59
+740,151,207,88
+720,145,209,60
+710,147,190,63
+"
+ice = read.csv(text=data.string)
+```
+
+
+(a) Estimate the coefficients of a multiple a linear regression model, y = β0 + β1x1 + β2x2 + β3x3 + .
+```{r}
+m2 = lm(ice_thickness~days.of.ice+days.bottom.lower.8+snow.depth,data=ice)
+m2
+```
+The model for calculating ice thickness is: 
+
+y= -372.98 + 3.54x1 +3.74x2-2.16x3
+
+Where x1= days of ice, x2= days with bottom temp under 8◦C, x3= average snow depth in mm
+
+(b) If two lakes differ by 2 in the average number of days per year of ice cover, with other variables being equal, by how much would you expect their maximum ice thickness to differ?
+
+```{r}
+thickdiff = 3.537 *2
+cat('We would expect the two lakes to differ by',thickdiff,'mm')
+```
+
+
+(c) Do lakes with greater average snow depth tend to have greater or lesser maximum ice thickness? Explain.
+
+According to the model, there is a negative correlation between snow depth and ice thickness. For every mm of snow depth there is there is a 2.166mm decrease in ice thickness.
+
+(d) Find R2, the proportion of variability in y = ice.thickness accounted for by the regression model.
+```{r}
+summary(m2)
+```
+
+The r^2 value for the model is 0.73 which means the model accounts for 73% of the variablity of ice thickness. 
+
+(e) Make a plot of residuals vs. fitted values to check on whether the errors seem independent with constant variance across the range of fitted values, and make a QQ plot to check whether it seems that the errors are normally distributed.
+
+```{r}
+plot(m2$fitted.values,m2$residuals)
+abline(0,0)
+qqnorm(m2$residuals)
+```
+
+Are these plots compatible with the assumptions required to do inference (tests and intervals) about the regression model?
+
+Yes bceause the qqplot shows an approximatly normal distribution though the points being in roughly a straight line. The values vs residuals seems to show the model becoming less accurate the higher the values get. While this trend is troubling we dont have enough data to tell if it is the trend of the data or hust random noise. 
+
+
+(f) For each coefficient, decide whether its difference from 0 is statistically significant at the default level α = .05. (That is, test H0 : βi = 0 for each i = 0, 1, 2, 3.)
+```{r}
+summary(m2)
+```
+The p values for the 3 variables are 0.016, 0.008, 0.032 respectivly which are all less than the default 0.05. the p value for the y intercept is 0.16 which is not significant given our 0.05 alpha.
+
+(g) Find a 90% confidence interval for β3, the slope of the y surface in the x3 = snow.depth direction.
+
+n= 12 
+t= 1.796
+Beta3 = 
+```{r}
+n= 12 
+t= 1.796
+Beta3 = mean(ice$snow.depth)
+s = sd(ice$snow.depth)
+c = t*(s/sqrt(n))
+up = Beta3 + c
+low= Beta3 - c
+cat('The 90% confidence interval for snow depth is between 67.02mm and 82.51mm')
+```

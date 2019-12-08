@@ -1,0 +1,148 @@
+Homework 3
+
+Joel McClure
+
+1.A dairy scientist is testing a new feed additive. She chooses 13 cows at random from a large population. She randomly assigns nold = 8 to the old diet and nnew = 5 to a new diet including the additive. The cows are housed in 13 widely separated pens. After two weeks, she milks each cow and records the milk produced in pounds:
+
+Old Diet: 43, 51, 44, 47, 38, 46, 40, 35
+New Diet: 47, 75, 85, 100, 58
+
+Let µnew and µold be the population mean milk productions for the new and old diets, respectively. She wishes to test H0 : µnew − µold = 0 against HA : µnew − µold 6= 0 using α = 0.05.
+
+(a) Graph the data as you see fit. Why did you choose the graph(s) that you did and what does it (do they) tell you?
+
+```{r}
+old_diet = c(43, 51, 44, 47, 38, 46, 40, 35)
+new_diet = c(47, 75, 85, 100, 58)
+hist(old_diet)
+abline(v=mean(old_diet))
+hist(new_diet)
+abline(v=mean(new_diet))
+qqnorm(old_diet)
+qqnorm(new_diet)
+```
+
+I chose to graph two histograms with the means for each marked. These are able to be compared to see that there is a difference between the two populations that needs to be looked into statistically. Additionally, I plotted the qqplots for the two sample to see if they were normally distributed. They both are roughly a linear line so we can assume they are normal and can continue with our analysis.
+
+(b) Choose a test appropriate for the hypotheses and justify your choice based on your answer to part (a). Then perform the test by computing a p-value, and making a reject or not reject decision. Do this without R and show your work. (Also do it with R, if you wish, to check your work). Finally, state your conclusion in the context of the problem.
+
+I will be doing a Welch's T-Test which will allow us to compare these two populations and test if they are statistically significantly different.
+
+Ho: new diet - old diet = 0
+HA: new diet - old diet != 0 
+```{r}
+xold = mean(old_diet)
+xnew = mean(new_diet)
+sold = sd(old_diet)
+snew = sd(new_diet)
+nold = length(old_diet)
+nnew = length(new_diet)
+t = (xnew - xold)/sqrt(sold^2/nold+snew^2/nnew)
+v = (sold^2/nold+snew^2/nnew)^2/((sold^2/nold)^2/(nold-1)+(snew^2/nnew)^2/(nnew-1))
+v = floor(v)
+t
+v
+
+```
+Our Welch's T-Test gave us a significance level between 0.05 and 0.02 which is less than our default threshold of value of 0.05. We reject the null hypothesis. These data are strong evidence that the new diet does impact milk production for these cows.
+
+2. A shoe manufacturer compared material A and material B for the soles of shoes. Twelve volunteers each got two shoes. The left was made with material A and the right with material B. On both shoes, the material was 1 inch thick. Volunteers used the shoes normally for two months and returned them to the manufacturer. Technicians then measured the thickness of the soles and recorded the amount of wear (in microns):
+
+Volunteer 1 2 3 4 5 6 7 8 9 10 11 12
+Sole A 379 378 328 372 325 304 356 309 354 318 355 392
+Sole B 372 376 328 368 283 252 369 321 379 303 328 411
+
+They wish to test H0 : µA −µB = 0 against HA : µA−µB != 0, where µA and µB are the unknown population mean amounts of sole wear, using α = 0.05.
+
+(a) Are the two samples paired or independent? Explain your answer.
+
+The two samples are paired because one shoe from each group is worn by each volunteer. Both of these shoes should be subjected to the same wear and tear for each volunteer and thus any differences shown would be due to the material strength. 
+
+(b) Make a normal QQ plot of the differences within each pair. Is it reasonable to assume a normal population of differences?
+
+```{r}
+sole_a = c(379, 378, 328, 372, 325, 304, 356, 309, 354, 318, 355, 392)
+sole_b = c(372, 376, 328, 368, 283, 252, 369, 321, 379, 303, 328, 411)
+qqnorm(sole_a)
+qqnorm(sole_b)
+```
+While these plots aren't linear, they don't deviate from linear too much thus it is reasonable to assume that they are from a normal population and we can continue with our testing. 
+
+(c) Choose a test appropriate for the hypotheses above and justify your choice based on your answers to parts (a) and (b). Perform the test by computing a p-value, make a test decision, and state your conclusion in the context of the problem.
+
+We will run an matched pairs test due to the populations not being independent and them both being normal.
+```{r}
+
+diff = sole_a-sole_b
+m = mean(diff)
+s = sd(diff)
+n = length(diff)
+t = (m-0)/(s/sqrt(n))
+t
+n
+
+```
+Because our t value, 0.97 gives us a p value between 0.5 and 0.2 which is not significant thus we fail to reject the null. These data are not strong evidence that these two shoe sole materials are different. 
+
+
+3. A study explored the effect of ethanol on sleep time. Fifteen rats were randomized to one of three treatments. Treatment 1 was water (control). Treatment 2 was 1g of ethanol per kg of body weight, and Treatment 3 was 2g/kg. The amount of REM sleep (in minutes) in a 24hr period was recorded:
+
+Treatment 1: 63, 54, 69, 50, 72
+Treatment 2: 45, 60, 40, 56
+Treatment 3: 31, 40, 45, 25, 23, 28
+
+(a) Graph the data. Why did you choose the graph that you did and what does it tell you?
+
+```{r}
+t1 = c(63, 54, 69, 50, 72)
+t2 = c(63, 54, 69, 50, 72)
+t3 = c(31, 40, 45, 25, 23, 28)
+sleeplengths = c(t1,t2,t3)
+n = length(sleeplengths)
+
+(t1l = rep('t1', times = length(t1)))
+(t2l = rep('t2', times = length(t2))) 
+(t3l = rep('t3', times = length(t3)))
+sleep_labels = c(t1l,t2l,t3l)
+sleep_labels
+(sleep_treatment = factor(sleep_labels))
+
+stripchart(sleeplengths ~ sleep_treatment, vertical = TRUE)
+tapply(sleeplengths, sleep_treatment, mean)
+tapply(sleeplengths, sleep_treatment, sd)
+```
+I chose to plot the three treatment groups in a strip chart for their respective groups. This shows that the groups 1 and 2  appear to be similar however group 3 is very different than the other two. We will need to run an ANOVA test to tell it's significance.
+
+(b) Use R to create an ANOVA table.
+
+```{r}
+sleep.model = aov(sleeplengths~sleep_treatment)
+anova(sleep.model)
+```
+
+
+(c) Evaluate the ANOVA assumptions graphically. Was ANOVA appropriate here?
+```{r}
+plot(residuals(sleep.model)~ fitted(sleep.model), ylab= 'Residuals', xlab = 'Fitted Values', main = 'Residuals vs Fitted Values')
+
+qqnorm(residuals(sleep.model),main =  'QQ Plot of Residuals')
+```
+
+(d) Based on the ANOVA table, make a conclusion in the context of the problem.
+
+Based on our ANOVA model's p value being >0.001 there is strong evidence that these three sleep treatments are not the same. We reject the null hypothesis. These data are strong evidence that these sleep treatments are the same.
+
+(e) Use R to create 95% CI for all pairwise comparisons of means using the Tukey-Kramer method. Summarize your results using letter codes. What do you conclude?
+
+```{r}
+TukeyHSD(sleep.model, conf.level = 0.95)
+qtukey(p=1-.05,nmeans = 3, df = n-3)
+```
+
+The Tukey-Kramer method shows us that treatments 1 and 2 are very similar with a p-value of 1 showing they are almost identical. Treatment 3 however is significantly different that both treatment 1 and 2 with p values >0.001.
+
+Treatment    Letter
+T1           A
+T2           A
+T3           B
+

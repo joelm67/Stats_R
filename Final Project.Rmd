@@ -1,0 +1,56 @@
+Final Project
+
+Joel McClure
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, warning = FALSE)
+library (dplyr)
+library(ggplot2)
+```
+
+For my final statistics project I will be building a linear model to predict beer consumption in Sao Paulo, Brazil. In order to test this question six variables, date, mean temperature, minimum temperature, max temperature, precipitation, and whether or not its the weekend, will be compared with the beer consumption in the city. Of the six variables analysed, whether it was the weekend was the highest correlated with beer consumption followed by maximum temperature with amount of precipitation having a significant negative impact. 
+
+```{r}
+#Here is reading the CSV file from the directory on my computer and translating the column headers into english. I got this file from Kaggle, the url is pasted below. Additionally, the file will be submitted with this code.
+Url = 'https://www.kaggle.com/dongeorge/beer-consumption-sao-paulo'
+df = read.csv('Consumo_cerveja.csv')
+col_names = c('Date', 'Mean_Temperature', 'Minimum_Temperature', 'Max_Temperature', 'Precipitation', 'Weekend', 'Beer_Consumption')
+colnames(df) = col_names
+```
+
+Let's explore the relationships graphically to see if they might be good indicators of beer consumption.
+```{r}
+df$Mean_Temperature = as.numeric(df$Mean_Temperature)
+for (x in col_names[1:5]){
+  plot(df[[x]],df$Beer_Consumption, xlab = x, ylab= "Beer Consumption")
+  mplot = lm(df$Beer_Consumption~df[[x]])
+  yi = mplot$coefficients[1]
+  s = mplot$coefficients[2]
+  if (x != "Date"){
+    abline(yi,s)
+  }
+}
+
+ggplot(df, aes(x=as.factor(Weekend), y=Beer_Consumption)) +
+  geom_boxplot()
+
+```
+
+
+Of all the variables, date seems to be the only variable that isn't correlated so it will be excluded from the model. Additionally, seeing as how Max Temperature is the most correlated of the temperatures I will exclude the other two temperature variables. 
+
+Let's create a linear model with these three variables to test their significance and how good of predictors of beer consumption they are.
+```{r}
+model = lm(Beer_Consumption ~ .,data=df %>% select(-Date,-Mean_Temperature,-Minimum_Temperature))
+summary(model)
+plot(residuals(model)~ fitted(model), ylab= 'Residuals', xlab = 'Fitted Values', main = 'Residuals vs Fitted Values')
+```
+
+All three variables that were tested in the linear model have a p value of >.00001 which is very strong evidence that there is a relationship between each of these three and beer consumption in Sao Paulo, Brazil. Additionally the model has an R^2 value of 0.722 which means that these three variables account for over 70% of the variability of beer consumption for people in Sao Paulo, Brazil. It is important to note that these results can only be applied to the people of Sao Paulo and their beer consumption. In order to confirm these results in other areas e.g. Madison, WI one would need to collect data from that area and re-run the analysis.
+
+This report confirms the general assumption that people drink more beer when it's the weekend and warm outside while avoiding beer when it is raining. While these results aren't newsworthy, they do highlight how applicable the stats we are learning are and can confirm general assumptions that people have. Future work could analyse the beer consumption in other areas to see if this conclusion is applicable to other parts of the world or could expand this data set to include other factors e.g. holidays or unemployment rate.  
+
+
+```{r appendix, ref.label=knitr::all_labels(),echo=TRUE,eval=FALSE}
+```

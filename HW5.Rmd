@@ -1,0 +1,83 @@
+Homework 1
+Joel McClure
+
+1. A spinach producer is testing a new packaging line. They want the mean weight of spinach in each package to be 8 ounces. (If the mean is too high, they will lose money by providing too much spinach, and if the meanis too low, they will lose angry customers.) They run the machine for a few days to get a large population of packages, then select 12 packages at random and weigh the spinach in each. If they find strong evidencethe mean is too high or low, they can recalibrate the machine. Here are the sample weight (in ounces):
+
+7.7, 6.8, 8.0, 7.4, 7.1, 7.4, 7.2, 7.3, 8.3, 7.7, 7.6, 7.0
+
+(Except for the graph(s), I recommend doing this problem with a calculator and table as practice for exams. You may check your answers with R if you wish.)
+
+(a) State hypotheses appropriate to the research question.
+
+Ho: The mean weight for the bags of spinach is 8 ounces.
+
+Ha: The mean weight for the bags of spinace is not 8 ounces.
+
+(b) Graph the data as you see fit. Why did you choose the graph(s) that you did and what does it (do they) tell you?
+
+```{r}
+data = c(7.7, 6.8, 8.0, 7.4, 7.1, 7.4, 7.2, 7.3, 8.3, 7.7, 7.6, 7.0)
+qqnorm(data)
+hist(data)
+```
+
+I choose these graphs becaue they allow us to check for normal distributions in samples that don't qualify for the CLT. Becasue the qqplot is roughly linear we can assume that this data is ~normally distributed. 
+
+(c) Choose an appropriate test statistic for this situation and justify your answer. Then compute the observed value of the test statistic for this data.
+
+The qqplot follows a linear general trend thus we can assume that it is a normal distribution even with n<30. Because we have a roughly normal distribution I will use the t statistic to test the relationship between the sample and our supposed population values
+```{r}
+n= length(data)
+s = sd(data)
+xbar = mean(data)
+t = (xbar-8)/(s/sqrt(n))
+t
+```
+
+(d) Find the rejection region if we desire a test with α = 0.01.
+
+Our significance level(α) is .01 and this is a two sided test so our rejection regions is 3.106 < t  and t < -3.106
+
+(e) Make a reject or not reject decision. Then state your conclusion in the context of the problem. In other words, does it seem the packaging line needs recalibrating, and if so, in which direction?
+
+We reject the null hypothisis. The data shows strong evidence that the true population mean is different than 8. The machine produces bads with the mean weight of 7.45oz which means that the machine needs to be recalibrated to make the bags heavier. 
+
+(f) If you were to calculate a 99% confidence interval for the population mean weight, would you expect it to contain 8? Why or why not?
+
+No i would not expect the 99% confidence interval to contain 8 because we rejected the null hypothisis at α = .01 which is the same as calculating the 99% confidence interval.
+
+(g) Find a 99% confidence interval for the population mean weight.
+
+```{r}
+newt = 3.106*(s/sqrt(n))
+xbar+newt
+xbar-newt
+```
+Our 99% confidence interval is between 7.07oz and 7.84oz which does not contain 8 which gives us further evidence that we reject the null hypothisis 
+
+2. An animal’s maintenance caloric intake is defined as the number of calories per day required to maintain its weight at a constant level. We wish to discover whether the median maintenance caloric intake, M, for a population of rats is less than 10g/day. We draw a SRS of 17 rats, feed each rat 10g of dry food per day for 30 days, and find that 4 of the rats lost weight, while the rest gained weight.
+
+(a) State null and alternative hypotheses in terms of M.
+
+Ho: The median maintenance caloric intake for rats is 10g/day.
+
+Ha: The median maintenance caloric intake for rats is less than 10g/day.
+
+(b) Let B be the number of rats in a SRS of size 17 that exhibit daily caloric demands more than 10g/day. (Or, emphasizing the “sign” in “sign test,” B is the number of positive differences from the median.)
+
+If H0 is true, what is the distribution of B?
+
+B~Bin(n=17,pi=1/2)
+
+If our null hypothisis is true we would expect to have roughly half of our rats (8 or 9) losing weight(have a higher than 10g/day caloric need) in this sample and the other half would be gaining weight (have a lower than 10g/day caloric need).
+
+(c) What is the value of B observed in the study?
+
+Our obseverd B in this sample is 4.
+
+(d) Calculate the p-value and draw a conclusion.
+```{r}
+p = binom.test(4,17,.5,'less')
+p
+```
+Our binom test gives us a p-value of 0.0245 which is less than the standard α = .05. We reject the null hypothisis. The data are not strong evidence the population median maintanence caloric is 10g/day. 

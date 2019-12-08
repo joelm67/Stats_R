@@ -1,0 +1,78 @@
+Joel McClure
+```{r}
+srs = c(1.25, 1.64, 1.91, 2.31, 2.37, 2.38, 2.84, 2.87, 2.93, 2.94, 2.98, 3.00, 3.09, 3.22, 3.41)
+```
+
+1. Spiders
+a. Use R to create a frequency histogram of the data.
+
+```{r}
+hist(srs, main = "Spider Running Speed",xlab="Running Speed cm/s")
+rug(srs)
+```
+
+b. Use a calculator to compute the sample mean and sample standard deviation for the data.
+Mean = 2.61
+SD= 0.62
+
+Then use R to compute them.
+```{r}
+mean(srs)
+sd(srs)
+```
+
+Interpret these values–that is, what does the mean indicate about the data and what does the standard deviation indicate?
+
+In our sample, the mean running speed of this particular spider is 2.61 cm/s which is the average speed of the spiders in our sample or rather the total speed of all spiders summed and then devided by the total number of spiders(n). 
+
+The standard deviation tells us the average distance from the mean that the points are or how spread the data is around the mean.
+
+c.Use the rules in the lecture notes to find the three quartiles for the data.
+```{r}
+sort(srs)
+
+```
+
+Q1 = 2.34
+Q2 = 2.87
+Q3 = 2.99
+
+Then use R to compute them.
+```{r}
+q=quantile(srs)
+cat(' Q1\n ',unname(q[2]),'\n','Q2\n ',unname(q[3]),'\n','Q3\n ',unname(q[4]))
+
+```
+Do the answers agree?
+
+Yes
+
+d. Use R to compute the range and IQR for the data.
+Range:
+```{r}
+(max(srs)-min(srs))
+```
+IQR
+```{r}
+unname(q[4]-q[2])
+```
+e.) Make the boxplot with R to check your work; include the R boxplot here.
+```{r}
+boxplot(srs,ylim=c(0,4))
+```
+
+2)Two histograms
+
+a.Say which of the two histograms has a larger mean, or if they are about the same. Explain your answer.
+
+Of the two histograms, A has the larger mean. Both graphs are ~ normally distributed with A being centered between 18-20 and B being centered between 0-10 and the mean should be near the center of normally distributed data which means that A has a higher mean than B.
+
+b.Say which of the two histograms has a larger standard deviation, or if they are about the same. Explain your answer.
+
+Histogram B has the larger SD because it has a similar distribution over a larger range. It has a larger spread of the data around it's mean due to its range being around 90 vs. around 50 for histogram A which would lead to a larger SD.
+
+c.What simple change to this pair of graphs would have made the previous two questions easy to answer?
+
+Two help tell these two graphs apart I would graph them on the same graph with the same scale and axis. If they were plotted together it would be much easier to see the differences between the two sets and that while they have similar shape currently it has more to do with how the data is presented than the distributions being similar.
+
+

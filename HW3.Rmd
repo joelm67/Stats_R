@@ -1,0 +1,179 @@
+Homework #3
+
+Joel McClure 
+
+
+1. A certain circuit board consists of two resistors, green and red. The circuit board manufacturer has two
+huge bins filled with the resistors, one for each color. Based on several years of data, it is known that 90% of the red resistors are functional, and 75% of the green resistors are functional. When creating a circuit board, the technician selects one red and one green resistor at random and with one selection independentof the other.
+  (a) The circuit board as a whole is only functional if both resistors are functional. What is the probability that the circuit board is functional?
+```{r}
+redf = .9
+greenf =.75
+cat('Both functional:',redf*greenf)
+```
+
+
+  (b) What is the probability that exactly one of the resistors chosen is functional?
+```{r}
+cat("Red functional, Green non-functional:",redf*(1-greenf),"\nRed non-functional, Green functional:",(1-redf)*greenf,"\nExactly one color functional:",redf*(1-greenf)+(1-redf)*greenf)
+```
+  
+  
+2. In a population of fruit flies, 30% are black and 70% are gray. Two flies are randomly chosen, with the two choices independent of one another. Find the probability the two chosen flies have the same color. (Hint: Articulate all the possible color combinations for the two flies.)
+```{r}
+pblack = .3
+pgrey = .7
+cat('Both black:', pblack*pblack,'\nBoth grey', pgrey*pgrey,'\nSame color:' , pblack*pblack + pgrey*pgrey)
+```
+
+
+3. Consider rolling two fair six-sided dice. Let A be the event that the sum of the dice is no more than 4. Let B be the event that the first die is a 2.
+
+```{r}
+PA=0
+total=0
+for (i in 1:6){
+  for (x in 1:6){
+    total = total + 1
+    if ((i+x) <= 4){
+      PA = PA+1}}}
+```
+
+(a) Find P(A).
+```{r}
+cat('P(A)=', PA/total)
+```
+(b) Find P(B).
+```{r}
+cat('P(B)=', 1/6)
+```
+(c) Find P(A and B).
+```{r}
+cat("Beacuse A and B are dependent:\nP(A)*P(B|A)\n1/6*1/3\nP(A and B) = 1/18")
+```
+
+(d) Check whether P(A and B) and P(A) × P(B) are the same to decide whether A and B independent.
+```{r}
+cat("P(A) = 1/6\nP(B) = 1/6\nP(A and B) = 1/18\n1/36 != 1/18\nThey are not independent.") 
+```
+
+(e) Find P(A|B).
+```{r}
+cat("P(A|B) = 1/3")
+```
+
+
+(f) Confirm that P(A|B) = P(A and B)P(B).
+```{r}
+cat("P(A|B) = P(A and B)P(B)\n1/3 = 1/18 * 1/6")
+```
+
+
+4. A nefarious gambler has developed a weighted six-sided die, with sides marked 1, 2, 3, 4, 5, and 6. The probability that a 6 is rolled is 0.4, and all the other sides are equally likely. Define the random variable X as the value on the die when it is rolled once.
+
+(a) Write the probability mass function of X. That is, make a table of the values X can take and the
+associated probabilities.
+```{r}
+values = c(1:6)
+probs = c(1:6)
+for (i in values){
+  if (i != 6){
+    val = (1-.4)/5
+    probs[i]= val
+  } else {
+    probs[i]=0.4
+  }
+}
+```
+**Probability(P(X)) for Each Dice Roll(X)**
+
+|x|1|2|3|4|5|6|
+|-|-|-|-|-|-|-|
+|P(x)|0.12|0.12|0.12|0.12|0.12|0.4|
+
+
+(b) Find the probability that an even number is rolled.
+```{r}
+even = 0
+for (i in values){
+  if (i %% 2){
+    next
+  } else{
+    even= even + probs[i]
+  }
+}
+cat("P(Even):",even)
+```
+
+(c) Find the mean (or expected value) and variance of X.
+```{r}
+m= 0 
+for (i in (1:6)){
+  pv= values[i]*probs[i]
+  m = m + pv
+}
+v=0
+for (i in (1:6)){
+  v = v + ((values[i]-m)^2*probs[i])
+}
+cat("Mean:",m,"\nVariance:",v)
+```
+
+
+(d) The gambler has a second weighted die designed like the first. A game is based on the number W =
+2X +Y , where X is the number that shows up on the first weighed die and Y is the number that shows up on the second.
+i. Find the expected value (or mean) of W.
+```{r}
+cat("mean(x)=mean(y)\nmean(2x)=2mean(x)\nmean(w) = 2(4.2) + 4.2\nmean(w) = 12.6")
+```
+
+ii. Find the standard deviation of W.
+```{r}
+cat("var(2x) = 2^2var(x)\nvar(y) = var(x)\nvar(w) = 4(3.36) + 3.36\nvar(w) = 16.8\nsdv(w) = 4.10")
+```
+
+
+5. A high school student applies to seven colleges, each of which makes an admission decision by rolling a fairsix-sided die and admitting a student if a 1 is rolled. What is the probability the student will be admitted to exactly two colleges? (Round your answer to two decimal places.)
+```{r}
+
+cat("x~Bin(7,1/6)", "\nP(x=2)","\nP =",round(dbinom(2,7,1/6),2))
+```
+
+6. To celebrate their 30th birthdays, brothers Mario and Luigi of the Nintendo Mario video game franchise wish to study the heights of their mushroom enemies, the Goombas. Their reasoning is that shorter Goombas are easier to jump on. (Goombas die when Mario and Luigi jump on them.) Goomba heights are normally distributed with mean 12 inches and standard deviation 6 inches.
+
+(a) What is the probability that a randomly chosen goomba has a height greater than 15 inches?
+```{r}
+pnorm(15,12,6,FALSE)
+```
+
+(b) What is the probability that a randomly chosen goomba has a height between 13 and 15 inches?
+```{r}
+pnorm(15,12,6)-pnorm(13,12,6)
+```
+
+7. Let F be a random variable that represents the operating temperature in Fahrenheit of one instance of a manufacturing process, and let F ∼ N(90, 5^2). Let C be a random variable that represents the same process,but measured in Celsius. Fahrenheit can be converted to Celsius using C =59(F − 32).
+
+(a) Find the probability that one randomly selected instance of the process will have operating temperature greater than 93.8 Fahrenheit. Do this with a calculator and the N(0, 1) table, and then check your answer with R.
+```{r}
+temp = ((93.8-90)/5)
+bh = 1-.7764
+br = pnorm(93.8,90,5, FALSE)
+cat("P(Process temp > 93.8) by hand:", bh,"\nP(Process temp > 93.8) using R:",br)
+```
+
+(b) C is also normally distributed. Use the properties of E() and V AR() to find its mean and variance.
+```{r}
+mnc = (5/9)*(90-32)
+varc = (5/9)^2*25
+cat("Mean of C:",mnc,"\nVariance of C:",varc)
+```
+
+(c) Find the probability that one randomly selected instance of the process will have operating temperature below 29 Celsius. Do this with a calculator and the N(0, 1) table, and then check your answer with R.
+```{r}
+temp = (29-mnc)/(varc)
+temp
+bh2 = .3372
+br2 = pnorm(29,mnc,varc)
+cat("P(Process temp > 93.8) by hand:", bh2, "\nP(Process temp > 93.8) using R:",br2)
+```
+
